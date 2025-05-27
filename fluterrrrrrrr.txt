@@ -1,0 +1,129 @@
+import 'package:flutter/material.dart';
+import 'abrigo.dart';
+
+void main() => runApp(const AbrigosApp());
+
+class AbrigosApp extends StatelessWidget {
+  const AbrigosApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Gestão de Abrigos',
+      debugShowCheckedModeBanner: false,
+      home: const AbrigosPage(),
+    );
+  }
+}
+
+class AbrigosPage extends StatefulWidget {
+  const AbrigosPage({super.key});
+
+  @override
+  State<AbrigosPage> createState() => _AbrigosPageState();
+}
+
+class _AbrigosPageState extends State<AbrigosPage> {
+  List<Abrigo> abrigos = [
+    Abrigo(nome: "Ginásio Municipal", endereco: "Rua das Flores, 123 - Centro", capacidadeMaxima: 100, capacidadeAtual: 70),
+    Abrigo(nome: "Escola Central", endereco: "Av. Brasil, 456 - Centro", capacidadeMaxima: 80, capacidadeAtual: 80),
+    Abrigo(nome: "Clube Esperança", endereco: "Rua da Paz, 999 - Norte", capacidadeMaxima: 120, capacidadeAtual: 95),
+    Abrigo(nome: "Igreja São José", endereco: "Rua Santo Antônio, 12 - Sul", capacidadeMaxima: 60, capacidadeAtual: 30),
+    Abrigo(nome: "Centro Cultural", endereco: "Av. Cultura, 500 - Oeste", capacidadeMaxima: 90, capacidadeAtual: 90),
+    Abrigo(nome: "Escola Novo Mundo", endereco: "Rua Nova, 77 - Leste", capacidadeMaxima: 110, capacidadeAtual: 105),
+  ];
+
+  void adicionarPessoa(int index) {
+    setState(() {
+      if (abrigos[index].capacidadeAtual < abrigos[index].capacidadeMaxima) {
+        abrigos[index].capacidadeAtual++;
+      }
+    });
+  }
+
+  void removerPessoa(int index) {
+    setState(() {
+      if (abrigos[index].capacidadeAtual > 0) {
+        abrigos[index].capacidadeAtual--;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Gestão de Abrigos'),
+        backgroundColor: Colors.blueGrey,
+      ),
+      body: ListView.builder(
+        itemCount: abrigos.length,
+        itemBuilder: (context, index) {
+          final abrigo = abrigos[index];
+          return Card(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            elevation: 4,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    abrigo.nome,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(abrigo.endereco),
+                  const SizedBox(height: 4),
+                  Text("Capacidade Máxima: ${abrigo.capacidadeMaxima}"),
+                  Text("Capacidade Atual: ${abrigo.capacidadeAtual}"),
+                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(
+                        abrigo.estaLotado ? Icons.cancel : Icons.check_circle_outline,
+                        color: abrigo.estaLotado ? Colors.red : Colors.green,
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.remove_circle),
+                            onPressed: () => removerPessoa(index),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.add_circle),
+                            onPressed: () => adicionarPessoa(index),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+
+//teste
+
+class Abrigo {
+  final String nome;
+  final String endereco;
+  final int capacidadeMaxima;
+  int capacidadeAtual;
+
+  Abrigo({
+    required this.nome,
+    required this.endereco,
+    required this.capacidadeMaxima,
+    required this.capacidadeAtual,
+  });
+
+  bool get estaLotado => capacidadeAtual >= capacidadeMaxima;
+}
